@@ -37,7 +37,3 @@ Customers can browse plants publicly, and must log in to add items to a persiste
 
 ---
 
-## Project Structure
-Happy-Flowers/
-├─ Backend/ # Spring Boot REST API
-└─ Frontend/ # React frontend
