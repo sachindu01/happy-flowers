@@ -3,8 +3,10 @@
 A full-stack e-commerce web application for an Anthurium nursery.  
 Customers can browse plants publicly, and must log in to add items to a persistent cart and checkout.
 
+---
+
 ## Tech Stack
-- **Frontend:** React (planned)
+- **Frontend:** React
 - **Backend:** Spring Boot (Java 21), Spring Security (JWT)
 - **Database:** PostgreSQL
 - **Migrations:** Flyway
@@ -13,28 +15,29 @@ Customers can browse plants publicly, and must log in to add items to a persiste
 
 ---
 
-## Key Features (Implemented)
+## Key Features
+
 ### Public
-- View plant catalog (public endpoints)
+- Browse plant catalog (public access)
+
+### Authentication
+- Register and login endpoints
+- JWT-based authentication
+- Roles: `USER`, `ADMIN`
+- Admin user seeded automatically (configurable via environment variables)
+
+### Cart (Database-backed)
+- Persistent cart per user (stored in PostgreSQL)
+- Add to cart / update quantity / remove items
+- Cart total calculated server-side
 
 ### Admin (Single Admin)
 - Admin-only plant management:
   - Create / Update / Delete plants
 
-### Authentication
-- JWT-based authentication
-- Register and login endpoints
-- Roles: `USER`, `ADMIN`
-- Admin user seeded automatically (configurable via env vars)
-
-### Cart (Database-backed)
-- Persistent cart per user (stored in PostgreSQL)
-- Add to cart / update quantity / remove items
-- Total is calculated server-side
-
 ---
 
 ## Project Structure
--Happy Flowers/
--Backend/ # Spring Boot API
--Frontend/ # React app (planned / in progress)
+Happy-Flowers/
+├─ Backend/ # Spring Boot REST API
+└─ Frontend/ # React frontend
