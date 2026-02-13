@@ -1,39 +1,63 @@
 # Happy Flowers (Anthurium Store) — Full Stack Web App
 
-A full-stack e-commerce web application for an Anthurium nursery.  
-Customers can browse plants publicly, and must log in to add items to a persistent cart and checkout.
+Happy Flowers is a full-stack e-commerce web application for an Anthurium nursery.
+Anyone can browse the plant catalog publicly, but users must register/login to use the cart and checkout.
+Admins can manage plant inventory and view all orders.
 
 ---
 
 ## Tech Stack
-- **Frontend:** React
-- **Backend:** Spring Boot (Java 21), Spring Security (JWT)
-- **Database:** PostgreSQL
-- **Migrations:** Flyway
-- **API Style:** REST (JSON)
-- **Deployment (planned):** AWS
+
+### Frontend
+- React **19.2** (SPA)
+- Vite **7.2** (dev server + build)
+- react-router-dom **7.13** (routing)
+- axios **1.13** (API client)
+- React Context API (AuthContext, CartContext)
+
+### Backend
+- Spring Boot (Java 21)
+- Spring Security (JWT)
+
+### Database
+- PostgreSQL (Flyway migrations)
+
+### API
+- REST (JSON)
+- JWT stateless auth with roles: `USER`, `ADMIN`
+
+### Deployment (planned)
+- AWS
 
 ---
 
 ## Key Features
 
 ### Public
-- Browse plant catalog (public access)
+- Browse plant catalog
+  - `GET /api/plants`
+  - `GET /api/plants/:id`
 
-### Authentication
-- Register and login endpoints
-- JWT-based authentication
-- Roles: `USER`, `ADMIN`
-- Admin user seeded automatically (configurable via environment variables)
+### Authentication (JWT)
+- Register: `POST /auth/register` (default role `USER`)
+- Login: `POST /auth/login` (returns JWT)
+- JWT stored in `localStorage` under key `token`
+- JWT payload includes `userId`, `username`, and `role` (`USER`/`ADMIN`)
 
-### Cart (Database-backed)
-- Persistent cart per user (stored in PostgreSQL)
-- Add to cart / update quantity / remove items
-- Cart total calculated server-side
+### Cart (Persistent + Database-backed)
+- One cart per user (stored in PostgreSQL)
+- Add/update/remove items via `/api/cart/*`
+- Cart totals are computed server-side (prevents client-side price manipulation)
+- Checkout:
+  - `POST /api/orders/checkout` (places order + clears cart)
+- Order history:
+  - `GET /api/orders`
 
-### Admin (Single Admin)
-- Admin-only plant management:
-  - Create / Update / Delete plants
+### Admin (ADMIN only)
+- Plant inventory management (CRUD)
+  - `/api/admin/plants/*`
+- View all customer orders
+  - `GET /api/admin/orders`
+- Admin user is seeded automatically at startup (configurable via environment variables)
 
 ---
-
