@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -24,16 +25,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/health").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers("/api/plants/**").permitAll()
+                        .requestMatchers("/api/uploads/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger("SecurityDebug");
+                            log.warn("ACCESS DENIED: path={}, user={}, authorities={}, error={}",
+                                    request.getRequestURI(),
+                                    request.getUserPrincipal() != null ? request.getUserPrincipal().getName()
+                                            : "anonymous",
+                                    org.springframework.security.core.context.SecurityContextHolder.getContext()
+                                            .getAuthentication() != null
+                                                    ? org.springframework.security.core.context.SecurityContextHolder
+                                                            .getContext().getAuthentication().getAuthorities()
+                                                    : "none",
+                                    accessDeniedException.getMessage());
+                            response.sendError(403, "Forbidden - " + accessDeniedException.getMessage());
+                        }));
 
         return http.build();
     }

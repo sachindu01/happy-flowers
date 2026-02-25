@@ -9,9 +9,13 @@ public record PlantResponse(
         String category,
         Integer priceCents,
         Integer stockQty,
-        Boolean isActive
-) {
+        Boolean isActive,
+        String imageUrl) {
     public static PlantResponse from(Plant p) {
+        String mainImage = (p.getImages() != null && !p.getImages().isEmpty())
+                ? p.getImages().get(0).getUrl()
+                : null;
+
         return new PlantResponse(
                 p.getId(),
                 p.getName(),
@@ -19,7 +23,7 @@ public record PlantResponse(
                 p.getCategory(),
                 p.getPriceCents(),
                 p.getStockQty(),
-                p.getIsActive()
-        );
+                p.getIsActive(),
+                mainImage);
     }
 }

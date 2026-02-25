@@ -18,18 +18,18 @@ public class JwtService {
 
     public JwtService(
             @Value("${app.jwt.secret}") String secret,
-            @Value("${app.jwt.accessTokenMinutes}") long accessTokenMinutes
-    ) {
+            @Value("${app.jwt.accessTokenMinutes}") long accessTokenMinutes) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessTokenMinutes = accessTokenMinutes;
     }
 
-    public String generateToken(String email, Role role) {
+    public String generateToken(String email, String name, Role role) {
         long now = System.currentTimeMillis();
         long exp = now + accessTokenMinutes * 60_000L;
 
         return Jwts.builder()
                 .subject(email)
+                .claim("name", name)
                 .claim("role", role.name())
                 .issuedAt(new Date(now))
                 .expiration(new Date(exp))

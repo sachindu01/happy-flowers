@@ -25,8 +25,7 @@ public class AuthController {
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
-            JwtService jwtService
-    ) {
+            JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -52,7 +51,7 @@ public class AuthController {
 
         userRepository.save(u);
 
-        return new AuthResponse(jwtService.generateToken(u.getEmail(), u.getRole()));
+        return new AuthResponse(jwtService.generateToken(u.getEmail(), u.getName(), u.getRole()));
     }
 
     @PostMapping("/login")
@@ -60,12 +59,11 @@ public class AuthController {
         String email = req.email().toLowerCase();
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, req.password())
-        );
+                new UsernamePasswordAuthenticationToken(email, req.password()));
 
         User u = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        return new AuthResponse(jwtService.generateToken(u.getEmail(), u.getRole()));
+        return new AuthResponse(jwtService.generateToken(u.getEmail(), u.getName(), u.getRole()));
     }
 }
