@@ -16,12 +16,20 @@ public class PlantPublicController {
     }
 
     @GetMapping
-    public List<PlantResponse> list() {
-        return plantService.listPublicPlants().stream().map(PlantResponse::from).toList();
+    public List<PlantResponse> list(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false, defaultValue = "name") String sortBy) {
+        return plantService.listPublicPlants(search, category, sortBy).stream().map(PlantResponse::from).toList();
     }
 
     @GetMapping("/{id}")
     public PlantResponse get(@PathVariable Long id) {
         return PlantResponse.from(plantService.getPlant(id));
+    }
+
+    @GetMapping("/categories")
+    public List<String> listCategories() {
+        return plantService.listCategories();
     }
 }

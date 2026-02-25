@@ -17,6 +17,13 @@ public class PlantAdminController {
         this.plantService = plantService;
     }
 
+    @GetMapping
+    public java.util.List<PlantResponse> listAll() {
+        return plantService.listAllPlants().stream()
+                .map(PlantResponse::from)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     @PostMapping
     public PlantResponse create(@Valid @RequestBody PlantUpsertRequest req) {
         Plant p = Plant.builder()
@@ -27,7 +34,7 @@ public class PlantAdminController {
                 .stockQty(req.stockQty())
                 .isActive(req.isActive())
                 .build();
-        return PlantResponse.from(plantService.create(p));
+        return PlantResponse.from(plantService.create(p, req.imageUrl()));
     }
 
     @PutMapping("/{id}")
@@ -40,7 +47,7 @@ public class PlantAdminController {
                 .stockQty(req.stockQty())
                 .isActive(req.isActive())
                 .build();
-        return PlantResponse.from(plantService.update(id, incoming));
+        return PlantResponse.from(plantService.update(id, incoming, req.imageUrl()));
     }
 
     @DeleteMapping("/{id}")
