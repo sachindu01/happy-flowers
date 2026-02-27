@@ -20,7 +20,7 @@ const AdminPlantsPage = () => {
   const fetchPlants = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/api/admin/plants");
+      const res = await api.get("/admin/plants");
       setPlants(res.data);
     } catch (e) {
       console.error(e);
@@ -33,9 +33,9 @@ const AdminPlantsPage = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await api.put(`/api/admin/plants/${editingId}`, form);
+        await api.put(`/admin/plants/${editingId}`, form);
       } else {
-        await api.post("/api/admin/plants", form);
+        await api.post("/admin/plants", form);
       }
       setForm({ name: "", category: "", priceCents: 0, stockQty: 0, imageUrl: "", description: "", isActive: true });
       setEditingId(null);
@@ -60,7 +60,7 @@ const AdminPlantsPage = () => {
 
     try {
       setUploading(true);
-      const res = await api.post("/api/admin/upload", formData, {
+      const res = await api.post("/admin/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setForm({ ...form, imageUrl: res.data.url });
@@ -74,7 +74,7 @@ const AdminPlantsPage = () => {
   const deletePlant = async (id) => {
     if (!window.confirm("Delete this plant?")) return;
     try {
-      await api.delete(`/api/admin/plants/${id}`);
+      await api.delete(`/admin/plants/${id}`);
       fetchPlants();
     } catch (e) {
       console.error(e);

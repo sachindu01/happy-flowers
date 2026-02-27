@@ -41,7 +41,7 @@ const CheckoutPage = () => {
         ...(fulfillmentMethod === "DELIVERY" && { deliveryAddress: address }),
       };
 
-      await api.post("/api/orders", orderData);
+      await api.post("/orders", orderData);
       clearCart();
       alert("Order placed successfully!");
       navigate("/dashboard");

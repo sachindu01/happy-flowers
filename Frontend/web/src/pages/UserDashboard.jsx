@@ -14,7 +14,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await api.get("/api/orders");
+        const res = await api.get("/orders");
         setOrders(res.data);
       } catch (e) {
         console.error("Error fetching orders:", e);

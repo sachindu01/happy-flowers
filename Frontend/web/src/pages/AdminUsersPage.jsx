@@ -13,7 +13,7 @@ const AdminUsersPage = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const res = await api.get("/api/admin/users");
+            const res = await api.get("/admin/users");
             setUsers(res.data);
         } catch (e) {
             console.error(e);

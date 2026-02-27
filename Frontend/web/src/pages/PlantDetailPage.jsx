@@ -20,7 +20,7 @@ const PlantDetailPage = () => {
   useEffect(() => {
     const fetchPlant = async () => {
       try {
-        const res = await api.get(`/api/plants/${id}`);
+        const res = await api.get(`/plants/${id}`);
         setPlant(res.data);
       } catch (e) {
         console.error("Error fetching plant:", e);
