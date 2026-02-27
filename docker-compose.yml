@@ -25,7 +25,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://localhost:5173,https://happyflowers.duckdns.org}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@happyflowers.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     depends_on:
