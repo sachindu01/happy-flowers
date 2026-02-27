@@ -11,7 +11,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await api.get('/api/plants?limit=6');
+        const res = await api.get('/plants?limit=6');
         setFeatured(res.data.slice(0, 6));
       } catch (e) {
         console.error('Error fetching featured plants:', e);

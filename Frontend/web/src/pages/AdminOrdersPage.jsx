@@ -13,7 +13,7 @@ const AdminOrdersPage = () => {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const res = await api.get("/api/admin/orders");
+            const res = await api.get("/admin/orders");
             setOrders(res.data);
         } catch (e) {
             console.error(e);
@@ -59,8 +59,8 @@ const AdminOrdersPage = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase ${o.orderStatus === 'COMPLETED' ? 'bg-emerald-50 text-emerald-600' :
-                                                o.orderStatus === 'CANCELLED' ? 'bg-rose-50 text-rose-600' :
-                                                    'bg-amber-50 text-amber-600'
+                                            o.orderStatus === 'CANCELLED' ? 'bg-rose-50 text-rose-600' :
+                                                'bg-amber-50 text-amber-600'
                                             }`}>
                                             {o.orderStatus.replace('_', ' ')}
                                         </span>

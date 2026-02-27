@@ -16,7 +16,7 @@ const CatalogPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await api.get('/api/plants/categories');
+        const res = await api.get('/plants/categories');
         setCategories(res.data);
       } catch (e) {
         console.error('Error fetching categories:', e);
@@ -34,7 +34,7 @@ const CatalogPage = () => {
         if (category) params.append('category', category);
         if (sortBy) params.append('sortBy', sortBy);
 
-        const res = await api.get(`/api/plants?${params.toString()}`);
+        const res = await api.get(`/plants?${params.toString()}`);
         setPlants(res.data);
       } catch (e) {
         console.error('Error fetching plants:', e);

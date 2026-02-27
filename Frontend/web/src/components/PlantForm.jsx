@@ -19,9 +19,9 @@ const PlantForm = ({ plant, onClose, onSave }) => {
 
     try {
       if (plant.id) {
-        await api.put(`/api/admin/plants/${plant.id}`, formData);
+        await api.put(`/admin/plants/${plant.id}`, formData);
       } else {
-        await api.post('/api/admin/plants', formData);
+        await api.post('/admin/plants', formData);
       }
       onSave();
     } catch (e) {

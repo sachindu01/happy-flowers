@@ -21,7 +21,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await api.post("/api/auth/login", { email, password });
+      const res = await api.post("/auth/login", { email, password });
       // Backend returns AuthResponse(String accessToken)
       login(res.data.accessToken);
       navigate("/");
