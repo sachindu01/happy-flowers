@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy pom and fetch dependencies
 COPY pom.xml .
-RUN mvc dependency:go-offline
+RUN mvn dependency:go-offline
 
 # Copy source and build
 COPY src ./src
