@@ -33,6 +33,8 @@ services:
         condition: service_healthy
     networks:
       - happy-network
+    ports:
+      - "8080:8080"
     deploy:
       resources:
         limits:
@@ -46,6 +48,9 @@ services:
     container_name: happy-flowers-frontend
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
     networks:

@@ -53,7 +53,7 @@ const AdminOrdersPage = () => {
                             ) : orders.map((o) => (
                                 <tr key={o.id} className="hover:bg-slate-50/50 transition-colors group">
                                     <td className="px-6 py-4 font-bold text-slate-900">#ORD-{o.id}</td>
-                                    <td className="px-6 py-4 text-slate-600 font-medium">{o.customerName}</td>
+                                    <td className="px-6 py-4 text-slate-600 font-medium">{o.userName}</td>
                                     <td className="px-6 py-4 font-black text-slate-900 text-sm">
                                         LKR {(o.totalCents / 100).toLocaleString()}
                                     </td>

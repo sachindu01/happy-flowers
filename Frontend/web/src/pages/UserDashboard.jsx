@@ -5,6 +5,8 @@ import Card, { CardContent, CardHeader } from "../components/ui/Card";
 import Button from "../components/ui/Button";
 
 const centsToMoney = (cents) => Number(cents || 0) / 100;
+const formatLKR = (amount) => `LKR ${amount.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 
 const UserDashboard = () => {
   const { user } = useAuth();
@@ -84,7 +86,7 @@ const UserDashboard = () => {
                     <div className="text-right flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2">
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Grand Total</p>
                       <p className="text-2xl font-black text-slate-900">
-                        ${centsToMoney(order.totalCents).toFixed(2)}
+                        {formatLKR(centsToMoney(order.totalCents))}
                       </p>
                     </div>
                   </div>

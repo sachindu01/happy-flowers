@@ -52,10 +52,7 @@ const CatalogPage = () => {
     <div className="max-w-7xl mx-auto px-4 py-12 space-y-10">
       <header className="space-y-4 text-center md:text-left">
         <h1 className="text-4xl font-black text-slate-900">Plant Catalog</h1>
-        <p className="text-slate-500 max-w-2xl">
-          Explore our hand-picked collection of premium Anthuriums.
-          Use filters to find the perfect addition to your home.
-        </p>
+        <p className="text-slate-500 max-w-2xl">Explore our hand-picked collection of premium Anthuriums. Use filters to find the perfect addition to your home.</p>
       </header>
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 items-end">
