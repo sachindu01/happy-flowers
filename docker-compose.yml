@@ -47,7 +47,10 @@ services:
         - VITE_API_BASE_URL=${VITE_API_BASE_URL:-/api}
     container_name: happy-flowers-frontend
     ports:
-      - "3000:80"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
     networks:
