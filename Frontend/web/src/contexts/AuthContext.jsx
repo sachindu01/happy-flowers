@@ -13,6 +13,16 @@ const decodeJwtPayload = (token) => {
   return JSON.parse(atob(payload));
 };
 
+const isTokenValid = (token) => {
+  try {
+    const payload = decodeJwtPayload(token);
+    // exp is in seconds, Date.now() is in milliseconds
+    return payload.exp && payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,9 +30,14 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      try {
-        setUser(decodeJwtPayload(token));
-      } catch (e) {
+      if (isTokenValid(token)) {
+        try {
+          setUser(decodeJwtPayload(token));
+        } catch (e) {
+          localStorage.removeItem('token');
+        }
+      } else {
+        // Token expired — clear it
         localStorage.removeItem('token');
       }
     }

@@ -8,6 +8,7 @@ import Card, { CardContent } from "../components/ui/Card";
 import { getFullImageUrl } from "../utils/imageUtils";
 
 const centsToMoney = (cents) => Number(cents || 0) / 100;
+const formatLKR = (amount) => `LKR ${amount.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const CartPage = () => {
   const { items, updateQuantity, removeFromCart, totalCents } = useCart();
@@ -56,7 +57,7 @@ const CartPage = () => {
 
                   <div className="flex-1 space-y-1 text-center sm:text-left">
                     <h3 className="text-xl font-bold text-slate-900">{plant.name}</h3>
-                    <p className="text-emerald-600 font-bold">${unitPrice.toFixed(2)} / unit</p>
+                    <p className="text-emerald-600 font-bold">{formatLKR(unitPrice)} / unit</p>
                     <button
                       onClick={() => removeFromCart(plant.id)}
                       className="text-sm font-semibold text-rose-500 hover:text-rose-600 transition-colors pt-2"
@@ -77,9 +78,7 @@ const CartPage = () => {
                         }
                       />
                     </div>
-                    <p className="text-xl font-black text-slate-900">
-                      ${(unitPrice * qty).toFixed(2)}
-                    </p>
+                    <p className="text-xl font-black text-slate-900">{formatLKR(unitPrice * qty)}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -95,7 +94,7 @@ const CartPage = () => {
               <div className="space-y-4">
                 <div className="flex justify-between text-slate-400">
                   <span>Subtotal</span>
-                  <span>${centsToMoney(totalCents).toFixed(2)}</span>
+                  <span>{formatLKR(centsToMoney(totalCents))}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Delivery</span>
@@ -103,9 +102,7 @@ const CartPage = () => {
                 </div>
                 <div className="pt-4 border-t border-white/10 flex justify-between items-end">
                   <span className="text-lg font-bold">Total</span>
-                  <span className="text-3xl font-black text-emerald-400">
-                    ${centsToMoney(totalCents).toFixed(2)}
-                  </span>
+                  <span className="text-3xl font-black text-emerald-400">{formatLKR(centsToMoney(totalCents))}</span>
                 </div>
               </div>
 

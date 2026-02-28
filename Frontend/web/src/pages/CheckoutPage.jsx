@@ -7,6 +7,7 @@ import Input from "../components/ui/Input";
 import Card, { CardContent, CardHeader, CardFooter } from "../components/ui/Card";
 
 const centsToMoney = (cents) => Number(cents || 0) / 100;
+const formatLKR = (amount) => `LKR ${amount.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const CheckoutPage = () => {
   const { items, totalCents, clearCart } = useCart();
@@ -228,7 +229,7 @@ const CheckoutPage = () => {
                       <p className="text-slate-900 font-bold">{item.plant.name}</p>
                       <p className="text-slate-500">Qty: {item.quantity}</p>
                     </div>
-                    <span className="text-slate-900 font-black">${lineTotal.toFixed(2)}</span>
+                    <span className="text-slate-900 font-black">{formatLKR(lineTotal)}</span>
                   </div>
                 );
               })}
@@ -236,9 +237,7 @@ const CheckoutPage = () => {
             <CardFooter className="bg-slate-900 text-white p-6 space-y-6">
               <div className="flex justify-between items-end">
                 <span className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Grand Total</span>
-                <span className="text-3xl font-black text-emerald-400">
-                  ${centsToMoney(totalCents).toFixed(2)}
-                </span>
+                <span className="text-3xl font-black text-emerald-400">{formatLKR(centsToMoney(totalCents))}</span>
               </div>
               <Button
                 type="submit"
