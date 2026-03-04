@@ -66,4 +66,39 @@ public class AuthController {
 
         return new AuthResponse(jwtService.generateToken(u.getEmail(), u.getName(), u.getRole()));
     }
+
+    @PostMapping("/forgot-password")
+    public java.util.Map<String, String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
+        String email = req.email().toLowerCase();
+        User u = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String token = java.util.UUID.randomUUID().toString();
+        u.setResetToken(token);
+        u.setResetTokenExpiry(Instant.now().plusSeconds(3600)); // 1 hour expiry
+        userRepository.save(u);
+
+        // Simulated email payload returned conceptually for frontend development
+        // parsing
+        return java.util.Map.of("message", "Password reset requested. Check your email.", "mockToken", token);
+    }
+
+    @PostMapping("/reset-password")
+    public java.util.Map<String, String> resetPassword(@Valid @RequestBody ResetPasswordRequest req) {
+        User u = userRepository.findAll().stream()
+                .filter(user -> req.token().equals(user.getResetToken()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset token"));
+
+        if (u.getResetTokenExpiry().isBefore(Instant.now())) {
+            throw new IllegalArgumentException("Reset token has expired");
+        }
+
+        u.setPasswordHash(passwordEncoder.encode(req.newPassword()));
+        u.setResetToken(null);
+        u.setResetTokenExpiry(null);
+        userRepository.save(u);
+
+        return java.util.Map.of("message", "Password has been successfully updated.");
+    }
 }

@@ -12,11 +12,14 @@ import UIDemo from './pages/UIDemo';
 
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 
 import UserDashboard from './pages/UserDashboard';
+import HelpCenterPage from './pages/HelpCenterPage';
 
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPlantsPage from './pages/AdminPlantsPage';
@@ -34,9 +37,12 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/plants/:id" element={<PlantDetailPage />} />
+            <Route path="/help" element={<HelpCenterPage />} />
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
             <Route
               path="/cart"

@@ -47,7 +47,7 @@ const UserDashboard = () => {
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" size="sm" onClick={() => setIsEditingProfile(true)}>Edit Profile</Button>
-          <Button size="sm">Help Center</Button>
+          <Button size="sm" onClick={() => (window.location.href = "/help")}>Help Center</Button>
         </div>
       </header>
 

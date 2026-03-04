@@ -5,11 +5,16 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.Instant;
 
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
-@Entity @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 120)
@@ -30,4 +35,10 @@ public class User {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private Instant resetTokenExpiry;
 }
