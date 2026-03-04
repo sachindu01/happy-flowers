@@ -137,7 +137,7 @@ const CheckoutPage = () => {
                   />
                   <div className="space-y-0.5">
                     <span className="block font-bold text-slate-900">Self Pickup</span>
-                    <span className="block text-xs text-slate-500">Pick at our Colombo nursery</span>
+                    <span className="block text-xs text-slate-500">Pick at our Kandy nursery</span>
                   </div>
                 </label>
               )}
@@ -162,7 +162,7 @@ const CheckoutPage = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     label="City"
-                    placeholder="Colombo"
+                    placeholder="Kandy"
                     value={address.city}
                     onChange={(e) => setAddress({ ...address, city: e.target.value })}
                     required

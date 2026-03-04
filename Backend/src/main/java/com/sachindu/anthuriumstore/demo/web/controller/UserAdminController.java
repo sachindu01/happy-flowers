@@ -1,7 +1,10 @@
 package com.sachindu.anthuriumstore.demo.web.controller;
 
+import com.sachindu.anthuriumstore.demo.domain.model.User;
 import com.sachindu.anthuriumstore.demo.repository.UserRepository;
+import com.sachindu.anthuriumstore.demo.web.dto.AdminUserUpdateRequest;
 import com.sachindu.anthuriumstore.demo.web.dto.UserResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +28,8 @@ public class UserAdminController {
     }
 
     @PutMapping("/{id}")
-    public UserResponse updateUser(@PathVariable Long id,
-            @jakarta.validation.Valid @RequestBody com.sachindu.anthuriumstore.demo.web.dto.AdminUserUpdateRequest req) {
-        com.sachindu.anthuriumstore.demo.domain.model.User u = userRepository.findById(id)
+    public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody AdminUserUpdateRequest req) {
+        User u = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         u.setName(req.name());
