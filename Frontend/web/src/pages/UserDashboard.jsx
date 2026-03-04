@@ -11,20 +11,31 @@ const formatLKR = (amount) => `LKR ${amount.toLocaleString('en-LK', { minimumFra
 const UserDashboard = () => {
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: "", phone: "" });
   const [loading, setLoading] = useState(true);
+  const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/orders");
-        setOrders(res.data);
+        const [ordersRes, profileRes] = await Promise.all([
+          api.get("/orders"),
+          api.get("/users/profile").catch(() => null)
+        ]);
+        setOrders(ordersRes.data);
+        if (profileRes) {
+          setProfile(profileRes.data);
+          setProfileForm({ name: profileRes.data.name || "", phone: profileRes.data.phone || "" });
+        }
       } catch (e) {
-        console.error("Error fetching orders:", e);
+        console.error("Error fetching data:", e);
       } finally {
         setLoading(false);
       }
     };
-    fetchOrders();
+    fetchData();
   }, []);
 
   return (
@@ -35,7 +46,7 @@ const UserDashboard = () => {
           <p className="text-slate-500 font-medium">Manage your orders and account settings.</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="secondary" size="sm">Edit Profile</Button>
+          <Button variant="secondary" size="sm" onClick={() => setIsEditingProfile(true)}>Edit Profile</Button>
           <Button size="sm">Help Center</Button>
         </div>
       </header>
@@ -103,6 +114,56 @@ const UserDashboard = () => {
           </div>
         )}
       </section>
+
+      {isEditingProfile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md shadow-2xl animate-fade-in-up">
+            <CardHeader>
+              <h2 className="text-xl font-bold text-slate-900">Edit Profile</h2>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                setSavingProfile(true);
+                try {
+                  const res = await api.put("/users/profile", profileForm);
+                  setProfile(res.data);
+                  setIsEditingProfile(false);
+                  alert("Profile updated successfully! Note: You may need to log out and log back in to see the changes in the toolbar.");
+                } catch (err) {
+                  alert("Failed to update profile");
+                } finally {
+                  setSavingProfile(false);
+                }
+              }} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-semibold text-slate-700">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm"
+                    value={profileForm.name}
+                    onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-semibold text-slate-700">Phone</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm"
+                    value={profileForm.phone}
+                    onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                  />
+                </div>
+                <div className="flex gap-3 pt-4">
+                  <Button type="button" variant="secondary" className="flex-1" onClick={() => setIsEditingProfile(false)}>Cancel</Button>
+                  <Button type="submit" className="flex-1" disabled={savingProfile}>{savingProfile ? "Saving..." : "Save Changes"}</Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

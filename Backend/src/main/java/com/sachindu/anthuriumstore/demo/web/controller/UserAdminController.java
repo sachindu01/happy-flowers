@@ -23,4 +23,17 @@ public class UserAdminController {
                 .map(UserResponse::from)
                 .collect(Collectors.toList());
     }
+
+    @PutMapping("/{id}")
+    public UserResponse updateUser(@PathVariable Long id,
+            @jakarta.validation.Valid @RequestBody com.sachindu.anthuriumstore.demo.web.dto.AdminUserUpdateRequest req) {
+        com.sachindu.anthuriumstore.demo.domain.model.User u = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        u.setName(req.name());
+        u.setPhone(req.phone());
+        u.setRole(req.role());
+
+        return UserResponse.from(userRepository.save(u));
+    }
 }
