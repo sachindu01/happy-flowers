@@ -7,7 +7,8 @@ import {
   Users,
   Leaf,
   ClipboardList,
-  FileText
+  FileText,
+  Settings
 } from "lucide-react";
 import Card, { CardContent } from "../components/ui/Card";
 import { api } from "../api/api";
@@ -67,6 +68,7 @@ const AdminDashboard = () => {
     { name: "View Orders", path: "/admin/orders", desc: "Review customer orders and fulfillment status.", icon: ClipboardList },
     { name: "Manage Customers", path: "/admin/users", desc: "View and manage registered customer accounts.", icon: Users },
     { name: "Inventory Log", path: "/admin/inventory", desc: "Track stock levels and adjustment history.", icon: FileText },
+    { name: "Store Settings", path: "/admin/settings", desc: "Configure fulfillment methods and global rules.", icon: Settings },
   ];
 
   return (

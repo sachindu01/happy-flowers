@@ -25,6 +25,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminPlantsPage from './pages/AdminPlantsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminSettingsPage from './pages/AdminSettingsPage';
 
 const App = () => {
   return (
@@ -81,6 +82,7 @@ const App = () => {
             <Route path="/admin/plants" element={<PrivateRoute adminOnly><AdminPlantsPage /></PrivateRoute>} />
             <Route path="/admin/orders" element={<PrivateRoute adminOnly><AdminOrdersPage /></PrivateRoute>} />
             <Route path="/admin/users" element={<PrivateRoute adminOnly><AdminUsersPage /></PrivateRoute>} />
+            <Route path="/admin/settings" element={<PrivateRoute adminOnly><AdminSettingsPage /></PrivateRoute>} />
 
             <Route path="/ui-demo" element={<UIDemo />} />
           </Routes>
