@@ -19,6 +19,18 @@ const CheckoutPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [allowedFulfillment, setAllowedFulfillment] = useState("BOTH");
+
+  React.useEffect(() => {
+    api.get("/public/settings")
+      .then(res => {
+        const method = res.data.allowedFulfillmentMethod;
+        setAllowedFulfillment(method);
+        if (method === "PICKUP_ONLY") setFulfillmentMethod("PICKUP");
+        if (method === "DELIVERY_ONLY") setFulfillmentMethod("DELIVERY");
+      })
+      .catch(err => console.error("Failed to load settings:", err));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,6 +75,9 @@ const CheckoutPage = () => {
     );
   }
 
+  const allowDelivery = allowedFulfillment === "BOTH" || allowedFulfillment === "DELIVERY_ONLY";
+  const allowPickup = allowedFulfillment === "BOTH" || allowedFulfillment === "PICKUP_ONLY";
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 space-y-10">
       <header className="space-y-2">
@@ -84,43 +99,49 @@ const CheckoutPage = () => {
               <h2 className="text-xl font-bold text-slate-900">1. Fulfillment Method</h2>
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label className={`
-                flex items-center gap-4 p-4 rounded-xl border-2 transition-all cursor-pointer
-                ${fulfillmentMethod === 'DELIVERY'
-                  ? 'border-emerald-500 bg-emerald-50/50'
-                  : 'border-slate-100 bg-slate-50 hover:border-slate-200'}
-              `}>
-                <input
-                  type="radio"
-                  value="DELIVERY"
-                  checked={fulfillmentMethod === "DELIVERY"}
-                  onChange={(e) => setFulfillmentMethod(e.target.value)}
-                  className="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300"
-                />
-                <div className="space-y-0.5">
-                  <span className="block font-bold text-slate-900">Home Delivery</span>
-                  <span className="block text-xs text-slate-500">Safe island-wide shipping</span>
-                </div>
-              </label>
 
-              <label className={`
-                flex items-center gap-4 p-4 rounded-xl border-2 transition-all cursor-pointer
-                ${fulfillmentMethod === 'PICKUP'
-                  ? 'border-emerald-500 bg-emerald-50/50'
-                  : 'border-slate-100 bg-slate-50 hover:border-slate-200'}
-              `}>
-                <input
-                  type="radio"
-                  value="PICKUP"
-                  checked={fulfillmentMethod === "PICKUP"}
-                  onChange={(e) => setFulfillmentMethod(e.target.value)}
-                  className="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300"
-                />
-                <div className="space-y-0.5">
-                  <span className="block font-bold text-slate-900">Self Pickup</span>
-                  <span className="block text-xs text-slate-500">Pick at our Colombo nursery</span>
-                </div>
-              </label>
+              {allowDelivery && (
+                <label className={`
+                  flex items-center gap-4 p-4 rounded-xl border-2 transition-all cursor-pointer
+                  ${fulfillmentMethod === 'DELIVERY'
+                    ? 'border-emerald-500 bg-emerald-50/50'
+                    : 'border-slate-100 bg-slate-50 hover:border-slate-200'}
+                `}>
+                  <input
+                    type="radio"
+                    value="DELIVERY"
+                    checked={fulfillmentMethod === "DELIVERY"}
+                    onChange={(e) => setFulfillmentMethod(e.target.value)}
+                    className="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                  />
+                  <div className="space-y-0.5">
+                    <span className="block font-bold text-slate-900">Home Delivery</span>
+                    <span className="block text-xs text-slate-500">Safe island-wide shipping</span>
+                  </div>
+                </label>
+              )}
+
+              {allowPickup && (
+                <label className={`
+                  flex items-center gap-4 p-4 rounded-xl border-2 transition-all cursor-pointer
+                  ${fulfillmentMethod === 'PICKUP'
+                    ? 'border-emerald-500 bg-emerald-50/50'
+                    : 'border-slate-100 bg-slate-50 hover:border-slate-200'}
+                `}>
+                  <input
+                    type="radio"
+                    value="PICKUP"
+                    checked={fulfillmentMethod === "PICKUP"}
+                    onChange={(e) => setFulfillmentMethod(e.target.value)}
+                    className="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                  />
+                  <div className="space-y-0.5">
+                    <span className="block font-bold text-slate-900">Self Pickup</span>
+                    <span className="block text-xs text-slate-500">Pick at our Kandy nursery</span>
+                  </div>
+                </label>
+              )}
+
             </CardContent>
           </Card>
 
@@ -141,7 +162,7 @@ const CheckoutPage = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     label="City"
-                    placeholder="Colombo"
+                    placeholder="Kandy"
                     value={address.city}
                     onChange={(e) => setAddress({ ...address, city: e.target.value })}
                     required

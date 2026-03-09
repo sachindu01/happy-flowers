@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { api } from "../api/api";
-import { Pencil, Trash2, Leaf, PlusCircle, X } from "lucide-react";
+import { Pencil, Trash2, Leaf, PlusCircle, X, Tag } from "lucide-react";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Card, { CardContent } from "../components/ui/Card";
@@ -8,10 +8,17 @@ import { getFullImageUrl } from "../utils/imageUtils";
 
 const AdminPlantsPage = () => {
   const [plants, setPlants] = useState([]);
-  const [form, setForm] = useState({ name: "", category: "", priceCents: 0, stockQty: 0, imageUrl: "", description: "", isActive: true });
+  const [form, setForm] = useState({ name: "", category: "", priceRs: "", stockQty: 0, imageUrl: "", description: "", isActive: true });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [newCategoryMode, setNewCategoryMode] = useState(false);
+
+  // Derive unique categories from the loaded plants list
+  const existingCategories = useMemo(() => {
+    const cats = plants.map((p) => p.category).filter(Boolean);
+    return [...new Set(cats)].sort();
+  }, [plants]);
 
   useEffect(() => {
     fetchPlants();
@@ -32,13 +39,15 @@ const AdminPlantsPage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
+      const payload = { ...form, priceCents: Math.round(parseFloat(form.priceRs || 0) * 100) };
       if (editingId) {
-        await api.put(`/admin/plants/${editingId}`, form);
+        await api.put(`/admin/plants/${editingId}`, payload);
       } else {
-        await api.post("/admin/plants", form);
+        await api.post("/admin/plants", payload);
       }
-      setForm({ name: "", category: "", priceCents: 0, stockQty: 0, imageUrl: "", description: "", isActive: true });
+      setForm({ name: "", category: "", priceRs: "", stockQty: 0, imageUrl: "", description: "", isActive: true });
       setEditingId(null);
+      setNewCategoryMode(false);
       fetchPlants();
     } catch (e) {
       console.error(e);
@@ -47,7 +56,11 @@ const AdminPlantsPage = () => {
 
   const handleEdit = (p) => {
     setEditingId(p.id);
-    setForm({ ...p });
+    setForm({
+      ...p,
+      priceRs: p.priceCents ? (p.priceCents / 100).toString() : ""
+    });
+    setNewCategoryMode(false); // editing always has an existing category
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -55,11 +68,61 @@ const AdminPlantsPage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
       setUploading(true);
+
+      // --- Image Compression Logic ---
+      const compressedFile = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const MAX_WIDTH = 1024;
+            const MAX_HEIGHT = 1024;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height = Math.round((height * MAX_WIDTH) / width);
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width = Math.round((width * MAX_HEIGHT) / height);
+                height = MAX_HEIGHT;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const newFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                });
+                resolve(newFile);
+              } else {
+                reject(new Error("Canvas toBlob failed"));
+              }
+            }, 'image/jpeg', 0.7); // 0.7 quality output
+          };
+          img.onerror = (error) => reject(error);
+        };
+        reader.onerror = (error) => reject(error);
+      });
+      // --- End Compression ---
+
+      const formData = new FormData();
+      formData.append("file", compressedFile);
+
       const res = await api.post("/admin/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -103,9 +166,55 @@ const AdminPlantsPage = () => {
           </h2>
           <form onSubmit={handleSave} className="space-y-5">
             <Input label="Plant Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-            <Input label="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required />
+
+            {/* Category Picker */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-slate-700 flex items-center gap-1.5">
+                <Tag size={14} className="text-emerald-600" /> Category
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {existingCategories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => { setForm({ ...form, category: cat }); setNewCategoryMode(false); }}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${form.category === cat && !newCategoryMode
+                      ? "bg-emerald-500 text-white border-emerald-500 shadow-sm"
+                      : "bg-white text-slate-600 border-slate-200 hover:border-emerald-400 hover:text-emerald-600"
+                      }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+                {/* New category chip */}
+                <button
+                  type="button"
+                  onClick={() => { setNewCategoryMode(true); setForm({ ...form, category: "" }); }}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1 ${newCategoryMode
+                    ? "bg-emerald-500 text-white border-emerald-500 shadow-sm"
+                    : "bg-white text-slate-500 border-dashed border-slate-300 hover:border-emerald-400 hover:text-emerald-600"
+                    }`}
+                >
+                  <PlusCircle size={12} /> New category
+                </button>
+              </div>
+              {newCategoryMode && (
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Type new category name…"
+                  value={form.category}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 bg-slate-50 border border-emerald-400 rounded-xl text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium"
+                />
+              )}
+              {!newCategoryMode && !form.category && (
+                <p className="text-xs text-slate-400">Select a category above or add a new one.</p>
+              )}
+            </div>
             <div className="grid grid-cols-2 gap-4">
-              <Input type="number" label="Price (Cents)" value={form.priceCents} onChange={(e) => setForm({ ...form, priceCents: e.target.value })} required />
+              <Input type="number" step="0.01" label="Price (Rs)" value={form.priceRs} onChange={(e) => setForm({ ...form, priceRs: e.target.value })} required />
               <Input type="number" label="Stock Qty" value={form.stockQty} onChange={(e) => setForm({ ...form, stockQty: e.target.value })} required />
             </div>
 

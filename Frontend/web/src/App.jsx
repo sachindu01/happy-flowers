@@ -12,16 +12,20 @@ import UIDemo from './pages/UIDemo';
 
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 
 import UserDashboard from './pages/UserDashboard';
+import HelpCenterPage from './pages/HelpCenterPage';
 
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPlantsPage from './pages/AdminPlantsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminSettingsPage from './pages/AdminSettingsPage';
 
 const App = () => {
   return (
@@ -34,9 +38,12 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/plants/:id" element={<PlantDetailPage />} />
+            <Route path="/help" element={<HelpCenterPage />} />
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
             <Route
               path="/cart"
@@ -75,6 +82,7 @@ const App = () => {
             <Route path="/admin/plants" element={<PrivateRoute adminOnly><AdminPlantsPage /></PrivateRoute>} />
             <Route path="/admin/orders" element={<PrivateRoute adminOnly><AdminOrdersPage /></PrivateRoute>} />
             <Route path="/admin/users" element={<PrivateRoute adminOnly><AdminUsersPage /></PrivateRoute>} />
+            <Route path="/admin/settings" element={<PrivateRoute adminOnly><AdminSettingsPage /></PrivateRoute>} />
 
             <Route path="/ui-demo" element={<UIDemo />} />
           </Routes>

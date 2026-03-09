@@ -110,6 +110,14 @@ public class OrderService {
                                 .collect(Collectors.toList());
         }
 
+        @Transactional
+        public OrderResponse updateOrderStatus(Long orderId, OrderStatus newStatus) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+                order.setOrderStatus(newStatus);
+                return toResponse(orderRepository.save(order));
+        }
+
         private OrderResponse toResponse(Order order) {
                 List<OrderItemResponse> itemResponses = order.getItems().stream()
                                 .map(i -> new OrderItemResponse(

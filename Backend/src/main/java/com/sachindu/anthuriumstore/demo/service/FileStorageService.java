@@ -1,7 +1,6 @@
 package com.sachindu.anthuriumstore.demo.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,7 +21,11 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file) {
-        String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+        String originalName = file.getOriginalFilename();
+        String extension = (originalName != null && originalName.contains("."))
+                ? originalName.substring(originalName.lastIndexOf('.'))
+                : ".jpg"; // default extension for camera captures with no filename
+        String fileName = UUID.randomUUID().toString() + extension;
         try {
             if (fileName.contains("..")) {
                 throw new RuntimeException("Invalid path sequence " + fileName);
