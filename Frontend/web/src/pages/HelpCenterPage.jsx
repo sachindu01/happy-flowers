@@ -66,7 +66,7 @@ const HelpCenterPage = () => {
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Phone</label>
-                                    <p className="text-slate-900 font-bold">1-800-BOTANY</p>
+                                    <p className="text-slate-900 font-bold">+94 77 806 5052</p>
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Hours</label>

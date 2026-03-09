@@ -40,6 +40,7 @@ const Footer = () => {
                 <div>
                     <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Contact</h4>
                     <p className="text-sm mb-2">19/7 Hiyarapitiya, Handessa, Kandy</p>
+                    <p className="text-sm mb-2">+94 77 806 5052</p>
                     <p className="text-sm">support@happyflowers.com</p>
                 </div>
             </div>
